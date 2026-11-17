@@ -102,6 +102,48 @@ def resolve_title(state: State | None, mode: str, attribute: str | None) -> str 
     return None
 
 
+SERIES_TYPES = {"tvshow", "episode", "season", "tv_show", "tvseries"}
+MOVIE_TYPES = {"movie", "film"}
+_EPISODE = re.compile(r"^\s*S\d+\s*[:.,]?\s*[EF]\d+", re.IGNORECASE)
+MOVIE_MIN_DURATION = 4200  # s; episodes are practically never 70 min or longer
+
+
+def media_kind(state: State | None, src: dict[str, Any] | None = None) -> str | None:
+    """Tell whether a player shows a ``series`` or a ``movie`` (``None`` = unknown).
+
+    ``media_content_type`` decides when it says so. Many players (Apple TV apps)
+    only report ``video``; then the series name, an episode code in the artist
+    (Disney+ ``S37:F2 …``), the source's own title attribute (series name, or just
+    a year for movies) and finally the duration are used.
+    """
+    if state is None:
+        return None
+    attrs = state.attributes
+    content = str(attrs.get("media_content_type") or "").casefold()
+    if content in SERIES_TYPES:
+        return "series"
+    if content in MOVIE_TYPES:
+        return "movie"
+    if _text(attrs.get("media_series_title")):
+        return "series"
+    artist = _text(attrs.get("media_artist"))
+    if artist and _EPISODE.match(artist):
+        return "series"
+    if src and src.get(CONF_SRC_TITLE_MODE) == TITLE_CUSTOM and src.get(CONF_SRC_TITLE_ATTRIBUTE):
+        value = _text(attrs.get(src[CONF_SRC_TITLE_ATTRIBUTE]))
+        if value and _YEAR.match(value):
+            return "movie"
+        if value:
+            return "series"
+    try:
+        duration = float(attrs.get("media_duration") or 0)
+    except (TypeError, ValueError):
+        duration = 0
+    if duration >= MOVIE_MIN_DURATION:
+        return "movie"
+    return None
+
+
 def app_matches(state: State | None, apps: list[str] | None) -> bool:
     """True if no app filter is set or the player's ``app_name`` is in it."""
     wanted = {a.strip().casefold() for a in apps or [] if a and a.strip()}
@@ -125,6 +167,7 @@ class ProfilerEngine:
         self.key: str | None = None
         self.source: dict[str, Any] | None = None
         self.title: str | None = None
+        self.kind: str | None = None
         self.key_since: datetime = dt_util.utcnow()
         self.applying = False
         self.last_applied: str | None = None
@@ -175,6 +218,7 @@ class ProfilerEngine:
         # Initial key: no apply after a restart, only remember what is active.
         self.key, self.source, self.title = self.compute_key()
         self.key_since = dt_util.utcnow()
+        self.kind = self.current_media_kind(self.source)
 
     @callback
     def async_stop(self) -> None:
@@ -205,6 +249,11 @@ class ProfilerEngine:
             update()
 
     # --------------------------------------------------------------- detection
+    def current_media_kind(self, source: dict[str, Any] | None) -> str | None:
+        """``series`` / ``movie`` for the player of ``source`` (``None`` = unknown)."""
+        player = source.get(CONF_SRC_PLAYER) if source else None
+        return media_kind(self.hass.states.get(player) if player else None, source)
+
     def compute_key(self) -> tuple[str | None, dict[str, Any] | None, str | None]:
         """Work out the profile key from the current states.
 
@@ -290,12 +339,14 @@ class ProfilerEngine:
     @callback
     def _check_key(self) -> None:
         key, source, title = self.compute_key()
+        kind = self.current_media_kind(source)
         if key == self.key:
-            # Title attributes may update without changing the key.
-            if source is not self.source or title != self.title:
-                self.source, self.title = source, title
+            # Title attributes (or the media kind) may update without changing the key.
+            if source is not self.source or title != self.title or kind != self.kind:
+                self.source, self.title, self.kind = source, title, kind
                 self._notify_listeners()
             return
+        self.kind = kind
         _LOGGER.debug("Profile key changed: %s -> %s", self.key, key)
         self.key, self.source, self.title = key, source, title
         self.key_since = dt_util.utcnow()

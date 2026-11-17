@@ -140,7 +140,7 @@ Pro Profiler:
 
 | Entität | Was sie tut |
 |---|---|
-| `sensor.<name>_aktives_profil` | Der aktuelle Schlüssel, z. B. `Plex\|The Expanse`. Die Attribute zeigen Quelle, Titel, die Profilwerte und ob das Standardprofil gilt. |
+| `sensor.<name>_aktives_profil` | Der aktuelle Schlüssel, z. B. `Plex\|The Expanse`. Die Attribute zeigen Quelle, Titel, die Profilwerte und ob das Standardprofil gilt, außerdem den spielenden Player (`media_player`), dessen `media_content_type` und `media_kind` (`series` / `movie`, sonst leer), damit andere Integrationen erkennen, ob eine Serie oder ein Film läuft. Meldet der Player nur `video` (z. B. Apps auf dem Apple TV), wird die Art aus Seriennamen, Folgenangabe, Jahreszahl oder Dauer (ab 70 min = Film) abgeleitet. |
 | `sensor.<name>_gespeicherte_profile` | Anzahl der gespeicherten Profile; die Schlüssel stehen in den Attributen. |
 | `switch.<name>_automatisch_anwenden` | Automatisches Anwenden ein- oder ausschalten. |
 | `switch.<name>_automatisch_lernen` | Automatisches Lernen ein- oder ausschalten. |

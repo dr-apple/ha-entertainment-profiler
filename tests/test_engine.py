@@ -10,6 +10,7 @@ from pytest_homeassistant_custom_component.common import (
 )
 
 from custom_components.entertainment_profiler.const import DOMAIN
+from custom_components.entertainment_profiler.engine import media_kind
 
 from .conftest import (
     PLEX,
@@ -292,3 +293,60 @@ async def test_source_profile_as_fallback(hass: HomeAssistant) -> None:
     assert number[-1].data["value"] == -6
     attrs = hass.states.get(KEY_SENSOR).attributes
     assert attrs["has_profile"] is False
+
+
+def test_media_kind() -> None:
+    from homeassistant.core import State
+
+    def kind(attrs, src=None):
+        return media_kind(State("media_player.x", "playing", attrs), src)
+
+    assert kind({"media_content_type": "tvshow"}) == "series"
+    assert kind({"media_content_type": "Movie"}) == "movie"
+    assert kind({"media_content_type": "music"}) is None
+    assert kind({}) is None
+    assert media_kind(None) is None
+    # Apple TV apps only say "video": fall back to other hints.
+    assert kind({"media_content_type": "video", "media_artist": "S37:F2 TUPF"}) == "series"
+    assert kind({"media_series_title": "Severance"}) == "series"
+    plex = {"title_mode": "custom", "title_attribute": "media_artist"}
+    assert kind({"media_content_type": "video", "media_artist": "Succession"}, plex) == "series"
+    assert kind({"media_content_type": "video", "media_artist": "2026"}, plex) == "movie"
+    assert kind({"media_duration": 8700}) == "movie"
+    assert kind({"media_duration": 1370}) is None
+
+
+async def test_sensor_media_attributes(hass: HomeAssistant) -> None:
+    hass.states.async_set(ATV, "idle")
+    await _setup(hass, sources=ATV_SOURCES, key_with_label=False)
+    hass.states.async_set(
+        ATV,
+        "playing",
+        {
+            "app_name": "Rivulet",
+            "media_content_type": "video",
+            "media_title": "Folge 1",
+            "media_artist": "Succession",
+        },
+    )
+    await hass.async_block_till_done()
+    attrs = hass.states.get(KEY_SENSOR).attributes
+    assert attrs["media_player"] == ATV
+    assert attrs["media_content_type"] == "video"
+    assert attrs["media_kind"] == "series"
+
+    # Same key, the player reports the duration later: the kind follows.
+    hass.states.async_set(
+        ATV,
+        "playing",
+        {"app_name": "Disney+", "media_title": "Avatar"},
+    )
+    await hass.async_block_till_done()
+    assert hass.states.get(KEY_SENSOR).attributes["media_kind"] is None
+    hass.states.async_set(
+        ATV,
+        "playing",
+        {"app_name": "Disney+", "media_title": "Avatar", "media_duration": 11500},
+    )
+    await hass.async_block_till_done()
+    assert hass.states.get(KEY_SENSOR).attributes["media_kind"] == "movie"

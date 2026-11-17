@@ -136,7 +136,7 @@ For every profiler:
 
 | Entity | What it does |
 |---|---|
-| `sensor.<name>_active_profile` | The current key, e.g. `Plex\|The Expanse`. Attributes show the source, the title, the profile values and whether the default profile is used. |
+| `sensor.<name>_active_profile` | The current key, e.g. `Plex\|The Expanse`. Attributes show the source, the title, the profile values and whether the default profile is used, plus the playing player (`media_player`), its `media_content_type` and `media_kind` (`series` / `movie`, otherwise empty), so other integrations can tell whether a series or a movie is playing. If the player only reports `video` (e.g. Apple TV apps), the kind is derived from the series name, an episode code, a bare year or the duration (70 min or more = movie). |
 | `sensor.<name>_stored_profiles` | Number of stored profiles; the keys are in the attributes. |
 | `switch.<name>_apply_automatically` | Turn automatic applying on or off. |
 | `switch.<name>_learn_automatically` | Turn automatic learning on or off. |

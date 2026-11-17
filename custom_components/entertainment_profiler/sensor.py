@@ -9,6 +9,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from . import ProfilerConfigEntry
+from .const import CONF_SRC_LABEL, CONF_SRC_PLAYER
 from .engine import ProfilerEngine
 from .entity import ProfilerEntity
 
@@ -40,8 +41,10 @@ class ActiveKeySensor(ProfilerEntity, SensorEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         engine = self.engine
         values, is_default = engine.profile_for(engine.key) if engine.key else (None, False)
+        player = engine.source.get(CONF_SRC_PLAYER) if engine.source else None
+        player_state = self.hass.states.get(player) if player else None
         return {
-            "source": engine.source["label"] if engine.source else None,
+            "source": engine.source[CONF_SRC_LABEL] if engine.source else None,
             "title": engine.title,
             "has_profile": values is not None and not is_default,
             "uses_default_profile": values is not None and is_default,
@@ -49,6 +52,11 @@ class ActiveKeySensor(ProfilerEntity, SensorEntity):
             "applying": engine.applying,
             "last_applied": engine.last_applied,
             "last_learned": engine.last_learned,
+            "media_player": player,
+            "media_content_type": (
+                player_state.attributes.get("media_content_type") if player_state else None
+            ),
+            "media_kind": engine.current_media_kind(engine.source),
         }
 
 
