@@ -18,6 +18,16 @@ Home Assistant can control: you simply tell it which entities to remember.
 
 <p align="center"><img src="docs/images/how-it-works.svg" alt="How it works"></p>
 
+## Video
+
+<p align="center">
+  <a href="https://youtu.be/MSWej_OsfR0"><img src="docs/images/video.jpg" width="640" alt="Watch the video on YouTube: Nie wieder Lautstärke nachregeln"></a><br>
+  <a href="https://youtu.be/MSWej_OsfR0"><img src="https://img.shields.io/badge/YouTube-watch%20the%20video-red?logo=youtube" alt="Watch on YouTube"></a>
+  <a href="https://youtube.com/shorts/tSUVFV7G47I"><img src="https://img.shields.io/badge/YouTube-Short-red?logo=youtube" alt="YouTube Short"></a>
+</p>
+
+Setup and the integration in action with a real receiver (in German, 5 min).
+
 ## Features
 
 - **Per app *and* per series / movie.** `Plex|The Expanse` can sound different from `Plex|Dune`; apps

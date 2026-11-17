@@ -20,6 +20,16 @@ Entitäten er sich merken soll.
 
 <p align="center"><img src="docs/images/how-it-works.svg" alt="So funktioniert es"></p>
 
+## Video
+
+<p align="center">
+  <a href="https://youtu.be/MSWej_OsfR0"><img src="docs/images/video.jpg" width="640" alt="Video auf YouTube ansehen: Nie wieder Lautstärke nachregeln"></a><br>
+  <a href="https://youtu.be/MSWej_OsfR0"><img src="https://img.shields.io/badge/YouTube-Video%20ansehen-red?logo=youtube" alt="Auf YouTube ansehen"></a>
+  <a href="https://youtube.com/shorts/tSUVFV7G47I"><img src="https://img.shields.io/badge/YouTube-Short-red?logo=youtube" alt="YouTube Short"></a>
+</p>
+
+Einrichtung und die Integration im Einsatz mit einem echten Receiver (5 Minuten).
+
 ## Funktionen
 
 - **Pro App *und* pro Serie / Film.** `Plex|The Expanse` kann anders klingen als `Plex|Dune`; Apps
