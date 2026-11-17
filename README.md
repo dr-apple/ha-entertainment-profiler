@@ -34,7 +34,12 @@ Home Assistant can control: you simply tell it which entities to remember.
 - **Safety limits** for the volume (for example never below 30 % or above 70 %).
 - **Fixed profiles:** switch learning off for a source (for example a kids' app) and edit its profile
   by hand.
-- **Default and idle profile:** a profile called `Standard` is used for anything without its own
+- **One series, one profile:** optionally without the app name in the key, so *The Simpsons* on Plex
+  and Disney+ share one profile.
+- **Several apps on one player:** an app filter (`app_name`) separates e.g. Netflix, Disney+ and Plex
+  on the same Apple TV.
+- **Fallback, default and idle profile:** without its own profile the source's profile is used (e.g.
+  `Disney+`), otherwise a profile called `Standard` is used for anything without its own
   profile; an optional *idle* profile applies when the receiver is on but nothing plays.
 - **Edit profiles in the UI:** all profiles are a to-do list (title = key, description = values).
 - **Several profilers** (living room, bedroom, …) side by side.
@@ -73,8 +78,9 @@ active and where the title comes from.
 |---|---|
 | **Name** | The profile name of the app, for example `Plex`, `Netflix`, `SmartTube`. Must not contain `\|`. |
 | **Media player** | The player that shows the title (for example your Apple TV / Plex / Android TV player). |
+| **Only for these apps** | Optional. Compared with the player's `app_name` attribute. Needed when one player plays several apps (Apple TV, Android TV). |
 | **Active only if the receiver input is** | Optional. For example `TV Audio` for the Google TV input. Leave empty to rely on the player state only. |
-| **Title for series / movies** | *Automatic* (series name, otherwise title), *Series name*, *Media title*, *Own attribute*, or *none* (one profile per source). |
+| **Title for series / movies** | *Automatic* (series name, otherwise title), *Series name*, *Media title*, *Own attribute*, or *none* (one profile per source). With an own attribute the media title is used when the value is empty or just a year (common for movies). |
 | **Active only while the player is playing** | Off if the receiver input alone decides (the player may be idle). |
 | **Learn profiles** | Off for sources with a fixed profile. |
 
@@ -94,6 +100,7 @@ good start:
 | Learn only after the same title played for | 40 s | Keeps the receiver's own start-of-title changes out of your profiles. |
 | Wait for the receiver to reach the volume | 20 s | Then the command is repeated. |
 | Idle profile name | *(off)* | For example `Idle`. |
+| Include the app name in the key | on | Off: the key is only the title (`The Simpsons` instead of `Disney+\|The Simpsons`). Without a title the app name stays. |
 
 ## Example: receiver + subwoofer + three sources
 

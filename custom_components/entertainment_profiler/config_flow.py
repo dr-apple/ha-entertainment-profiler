@@ -21,6 +21,7 @@ from .const import (
     CONF_IDLE_LABEL,
     CONF_KEY_DEBOUNCE,
     CONF_KEY_STABLE,
+    CONF_KEY_WITH_LABEL,
     CONF_LEARN_STABLE,
     CONF_NAME,
     CONF_NOTIFY_APPLY,
@@ -29,6 +30,7 @@ from .const import (
     CONF_RECEIVER,
     CONF_SETTLE_TIMEOUT,
     CONF_SOURCES,
+    CONF_SRC_APPS,
     CONF_SRC_ID,
     CONF_SRC_LABEL,
     CONF_SRC_LEARN,
@@ -44,6 +46,7 @@ from .const import (
     DEFAULT_IDLE_LABEL,
     DEFAULT_KEY_DEBOUNCE,
     DEFAULT_KEY_STABLE,
+    DEFAULT_KEY_WITH_LABEL,
     DEFAULT_LEARN_STABLE,
     DEFAULT_SETTLE_TIMEOUT,
     DEFAULT_VOLUME_MAX,
@@ -146,6 +149,18 @@ class EntertainmentProfilerOptionsFlow(OptionsFlow):
         state = self.hass.states.get(receiver) if receiver else None
         return list(state.attributes.get("source_list") or []) if state else []
 
+    def _player_apps(self, player: str | None, chosen: list[str]) -> list[str]:
+        """Apps the player knows (its ``source_list`` and current ``app_name``)."""
+        state = self.hass.states.get(player) if player else None
+        apps: list[str] = list(chosen)
+        if state is not None:
+            candidates = [
+                *(state.attributes.get("source_list") or []),
+                state.attributes.get("app_name"),
+            ]
+            apps += [str(a) for a in candidates if a and str(a) not in apps]
+        return apps
+
     # --------------------------------------------------------------------- menu
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         menu = ["sources_menu", "settings", "controls"]
@@ -227,6 +242,9 @@ class EntertainmentProfilerOptionsFlow(OptionsFlow):
                 ): selector.EntitySelector(selector.EntitySelectorConfig(domain="notify")),
                 vol.Required(CONF_NOTIFY_APPLY, default=d(CONF_NOTIFY_APPLY, False)): bool,
                 vol.Required(CONF_NOTIFY_LEARN, default=d(CONF_NOTIFY_LEARN, False)): bool,
+                vol.Required(
+                    CONF_KEY_WITH_LABEL, default=d(CONF_KEY_WITH_LABEL, DEFAULT_KEY_WITH_LABEL)
+                ): bool,
             }
         )
         return self.async_show_form(step_id="settings", data_schema=schema)
@@ -234,6 +252,9 @@ class EntertainmentProfilerOptionsFlow(OptionsFlow):
     # ------------------------------------------------------------------ sources
     def _source_schema(self, defaults: dict[str, Any]) -> vol.Schema:
         receiver_sources = self._receiver_sources()
+        apps = self._player_apps(
+            defaults.get(CONF_SRC_PLAYER), list(defaults.get(CONF_SRC_APPS) or [])
+        )
         return vol.Schema(
             {
                 vol.Required(
@@ -242,6 +263,17 @@ class EntertainmentProfilerOptionsFlow(OptionsFlow):
                 vol.Required(
                     CONF_SRC_PLAYER, default=defaults.get(CONF_SRC_PLAYER, vol.UNDEFINED)
                 ): selector.EntitySelector(selector.EntitySelectorConfig(domain="media_player")),
+                vol.Optional(
+                    CONF_SRC_APPS,
+                    description={"suggested_value": defaults.get(CONF_SRC_APPS)},
+                ): selector.SelectSelector(
+                    selector.SelectSelectorConfig(
+                        options=apps,
+                        multiple=True,
+                        custom_value=True,
+                        mode=selector.SelectSelectorMode.DROPDOWN,
+                    )
+                ),
                 vol.Optional(
                     CONF_SRC_RECEIVER_SOURCE,
                     description={"suggested_value": defaults.get(CONF_SRC_RECEIVER_SOURCE)},
@@ -281,6 +313,11 @@ class EntertainmentProfilerOptionsFlow(OptionsFlow):
                 source.pop(opt, None)
             else:
                 source[opt] = source[opt].strip()
+        apps = [str(a).strip() for a in source.get(CONF_SRC_APPS) or [] if str(a).strip()]
+        if apps:
+            source[CONF_SRC_APPS] = apps
+        else:
+            source.pop(CONF_SRC_APPS, None)
         return source
 
     def _source_errors(self, source: dict[str, Any]) -> dict[str, str]:

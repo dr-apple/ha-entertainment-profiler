@@ -48,6 +48,7 @@
         "data": {
           "label": "Name (z. B. Plex, Netflix, SmartTube)",
           "player": "Media Player",
+          "apps": "Nur bei diesen Apps",
           "receiver_source": "Nur aktiv, wenn der Receiver-Eingang",
           "title_mode": "Titel für Serien / Filme",
           "title_attribute": "Eigenes Attribut (nur bei \"Eigenes Attribut\")",
@@ -58,7 +59,9 @@
           "receiver_source": "Optional. Leer lassen, um nur den Zustand des Players zu nutzen.",
           "title_mode": "Mit Titel bekommt jede Serie oder jeder Film ein eigenes Profil, sonst gibt es ein Profil pro Quelle.",
           "require_playing": "Ausschalten, wenn allein der Receiver-Eingang entscheidet (der Player darf im Leerlauf sein).",
-          "learn": "Speichert deine manuellen Änderungen als Profil dieser Quelle."
+          "learn": "Speichert deine manuellen Änderungen als Profil dieser Quelle.",
+          "apps": "Optional. Vergleicht das Attribut `app_name` des Players, z. B. wenn ein Apple TV mehrere Apps abspielt. Leer = jede App.",
+          "title_attribute": "Ist der Wert leer oder nur eine Jahreszahl (bei Filmen üblich), wird der Medientitel genommen."
         }
       },
       "edit_source": {
@@ -72,11 +75,16 @@
         "data": {
           "label": "Name (z. B. Plex, Netflix, SmartTube)",
           "player": "Media Player",
+          "apps": "Nur bei diesen Apps",
           "receiver_source": "Nur aktiv, wenn der Receiver-Eingang",
           "title_mode": "Titel für Serien / Filme",
           "title_attribute": "Eigenes Attribut (nur bei \"Eigenes Attribut\")",
           "require_playing": "Nur aktiv, solange der Player spielt",
           "learn": "Profile lernen"
+        },
+        "data_description": {
+          "apps": "Optional. Vergleicht das Attribut `app_name` des Players, z. B. wenn ein Apple TV mehrere Apps abspielt. Leer = jede App.",
+          "title_attribute": "Ist der Wert leer oder nur eine Jahreszahl (bei Filmen üblich), wird der Medientitel genommen."
         }
       },
       "remove_source": {
@@ -104,11 +112,13 @@
           "idle_label": "Name des Leerlauf-Profils (leer = aus)",
           "notify_entity": "Benachrichtigungsziel (optional)",
           "notify_apply": "Melden, wenn ein Profil angewendet wird",
-          "notify_learn": "Melden, wenn ein Profil gelernt wird"
+          "notify_learn": "Melden, wenn ein Profil gelernt wird",
+          "key_with_label": "App-Namen in den Schlüssel aufnehmen (App|Titel)"
         },
         "data_description": {
           "key_stable": "Verhindert, dass automatische Änderungen kurz nach dem Start eines Titels mitgelernt werden.",
-          "idle_label": "Gilt, wenn der Receiver an ist, aber keine Quelle passt. Wird nie gelernt."
+          "idle_label": "Gilt, wenn der Receiver an ist, aber keine Quelle passt. Wird nie gelernt.",
+          "key_with_label": "Aus: Der Schlüssel ist nur der Titel, damit teilt sich eine Serie ein Profil über alle Apps. Ohne Titel bleibt der App-Name der Schlüssel."
         }
       }
     },
@@ -171,7 +181,7 @@
         },
         "key": {
           "name": "Schlüssel",
-          "description": "App oder `App|Titel`. Standard: was gerade läuft."
+          "description": "App, Titel oder `App|Titel`."
         },
         "values": {
           "name": "Werte",
@@ -189,7 +199,7 @@
         },
         "key": {
           "name": "Schlüssel",
-          "description": "App oder `App|Titel`."
+          "description": "App, Titel oder `App|Titel`."
         }
       }
     },

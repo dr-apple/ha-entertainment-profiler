@@ -24,11 +24,13 @@ CONF_IDLE_LABEL = "idle_label"
 CONF_NOTIFY_ENTITY = "notify_entity"
 CONF_NOTIFY_APPLY = "notify_apply"
 CONF_NOTIFY_LEARN = "notify_learn"
+CONF_KEY_WITH_LABEL = "key_with_label"
 
 # --- source definition -------------------------------------------------------
 CONF_SRC_ID = "id"
 CONF_SRC_LABEL = "label"
 CONF_SRC_PLAYER = "player"
+CONF_SRC_APPS = "apps"
 CONF_SRC_RECEIVER_SOURCE = "receiver_source"
 CONF_SRC_TITLE_MODE = "title_mode"
 CONF_SRC_TITLE_ATTRIBUTE = "title_attribute"
@@ -51,6 +53,7 @@ DEFAULT_LEARN_STABLE = 30
 DEFAULT_KEY_STABLE = 40
 DEFAULT_SETTLE_TIMEOUT = 20
 DEFAULT_IDLE_LABEL = ""
+DEFAULT_KEY_WITH_LABEL = True
 
 # A stored profile with this key is used when the current key has no profile.
 DEFAULT_PROFILE_KEY = "Standard"

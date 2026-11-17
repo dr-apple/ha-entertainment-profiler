@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 from collections.abc import Callable
 from datetime import datetime
 from typing import Any
@@ -23,6 +24,7 @@ from .const import (
     CONF_IDLE_LABEL,
     CONF_KEY_DEBOUNCE,
     CONF_KEY_STABLE,
+    CONF_KEY_WITH_LABEL,
     CONF_LEARN_STABLE,
     CONF_NOTIFY_APPLY,
     CONF_NOTIFY_ENTITY,
@@ -30,6 +32,7 @@ from .const import (
     CONF_RECEIVER,
     CONF_SETTLE_TIMEOUT,
     CONF_SOURCES,
+    CONF_SRC_APPS,
     CONF_SRC_LABEL,
     CONF_SRC_LEARN,
     CONF_SRC_PLAYER,
@@ -43,6 +46,7 @@ from .const import (
     DEFAULT_IDLE_LABEL,
     DEFAULT_KEY_DEBOUNCE,
     DEFAULT_KEY_STABLE,
+    DEFAULT_KEY_WITH_LABEL,
     DEFAULT_LEARN_STABLE,
     DEFAULT_PROFILE_KEY,
     DEFAULT_SETTLE_TIMEOUT,
@@ -72,6 +76,9 @@ def _text(value: Any) -> str | None:
     return text or None
 
 
+_YEAR = re.compile(r"^(19|20)\d\d$")
+
+
 def resolve_title(state: State | None, mode: str, attribute: str | None) -> str | None:
     """Pick the title (series / movie name) out of a media player state."""
     if state is None or mode == TITLE_NONE:
@@ -82,10 +89,26 @@ def resolve_title(state: State | None, mode: str, attribute: str | None) -> str 
     if mode == TITLE_TITLE:
         return _text(attrs.get("media_title"))
     if mode == TITLE_CUSTOM:
-        return _text(attrs.get(attribute)) if attribute else None
+        if not attribute:
+            return None
+        value = _text(attrs.get(attribute))
+        # Some apps put the release year where the series name would be (movies);
+        # the media title is the better name then.
+        if value is None or _YEAR.match(value):
+            return _text(attrs.get("media_title"))
+        return value
     if mode == TITLE_AUTO:
         return _text(attrs.get("media_series_title")) or _text(attrs.get("media_title"))
     return None
+
+
+def app_matches(state: State | None, apps: list[str] | None) -> bool:
+    """True if no app filter is set or the player's ``app_name`` is in it."""
+    wanted = {a.strip().casefold() for a in apps or [] if a and a.strip()}
+    if not wanted:
+        return True
+    app = _text(state.attributes.get("app_name")) if state else None
+    return app is not None and app.casefold() in wanted
 
 
 class ProfilerEngine:
@@ -211,13 +234,20 @@ class ProfilerEngine:
                 player_state is None or player_state.state not in PLAYING_STATES
             ):
                 continue
+            if not app_matches(player_state, src.get(CONF_SRC_APPS)):
+                continue
             label = str(src[CONF_SRC_LABEL])
             title = resolve_title(
                 player_state,
                 src.get(CONF_SRC_TITLE_MODE, TITLE_NONE),
                 src.get(CONF_SRC_TITLE_ATTRIBUTE),
             )
-            key = f"{label}{KEY_SEPARATOR}{title}" if title else label
+            if not title:
+                key = label
+            elif self._opt(CONF_KEY_WITH_LABEL, DEFAULT_KEY_WITH_LABEL):
+                key = f"{label}{KEY_SEPARATOR}{title}"
+            else:
+                key = title
             return key, src, title
 
         if self.idle_label:
@@ -305,10 +335,18 @@ class ProfilerEngine:
         )
 
     def profile_for(self, key: str) -> tuple[dict[str, Any] | None, bool]:
-        """Return ``(values, is_default)`` for a key."""
+        """Return ``(values, is_fallback)`` for a key.
+
+        Without an own profile the source's profile (e.g. ``Disney+``) is used
+        for the current key, then the ``Standard`` profile.
+        """
         values = self.store.get(key)
         if values is not None:
             return values, False
+        if key == self.key and self.source is not None:
+            values = self.store.get(str(self.source[CONF_SRC_LABEL]))
+            if values is not None:
+                return values, True
         return self.store.get(DEFAULT_PROFILE_KEY), True
 
     async def async_apply(self, key: str | None = None) -> bool:
@@ -565,9 +603,9 @@ class ProfilerEngine:
             "applied": ("Profil", f"Profil {shown}: {text}")
             if german
             else ("Profile", f"Profile {shown}: {text}"),
-            "applied_default": ("Profil", f"Standardprofil für {shown}: {text}")
+            "applied_default": ("Profil", f"Ersatzprofil für {shown}: {text}")
             if german
-            else ("Profile", f"Default profile for {shown}: {text}"),
+            else ("Profile", f"Fallback profile for {shown}: {text}"),
             "created": ("Profil", f"Neues Profil gespeichert für {shown}: {text}")
             if german
             else ("Profile", f"New profile saved for {shown}: {text}"),

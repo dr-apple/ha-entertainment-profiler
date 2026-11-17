@@ -202,3 +202,93 @@ async def test_services_and_todo(hass: HomeAssistant) -> None:
 
     await hass.services.async_call(DOMAIN, "delete_profile", {"key": "Netflix"}, blocking=True)
     assert engine.store.get("Netflix") is None
+
+
+ATV = "media_player.atv"
+ATV_SOURCES = [
+    {
+        "id": "d",
+        "label": "Disney+",
+        "player": ATV,
+        "apps": ["Disney+"],
+        "title_mode": "title",
+        "require_playing": True,
+        "learn": True,
+    },
+    {
+        "id": "y",
+        "label": "YouTV",
+        "player": ATV,
+        "apps": ["YouTV"],
+        "title_mode": "none",
+        "require_playing": True,
+        "learn": True,
+    },
+    {
+        "id": "r",
+        "label": "Plex",
+        "player": ATV,
+        "apps": ["Rivulet", "plex preview"],
+        "title_mode": "custom",
+        "title_attribute": "media_artist",
+        "require_playing": True,
+        "learn": True,
+    },
+]
+
+
+async def test_app_filter_and_key_without_label(hass: HomeAssistant) -> None:
+    hass.states.async_set(ATV, "idle")
+    entry = await _setup(hass, sources=ATV_SOURCES, key_with_label=False)
+    engine = entry.runtime_data
+
+    hass.states.async_set(
+        ATV,
+        "playing",
+        {"app_name": "Disney+", "media_title": "Die Simpsons", "media_artist": "S37:F2"},
+    )
+    await hass.async_block_till_done()
+    assert engine.key == "Die Simpsons"
+    assert engine.source["label"] == "Disney+"
+
+    # Live TV: no title, the app name is the key.
+    hass.states.async_set(ATV, "playing", {"app_name": "YouTV", "media_title": "Tagesschau"})
+    await hass.async_block_till_done()
+    assert engine.key == "YouTV"
+
+    # Series name from media_artist (case-insensitive app match).
+    hass.states.async_set(
+        ATV,
+        "playing",
+        {"app_name": "Plex Preview", "media_title": "Folge 3", "media_artist": "Succession"},
+    )
+    await hass.async_block_till_done()
+    assert engine.key == "Succession"
+
+    # Movie: media_artist is only the year, the media title is used.
+    hass.states.async_set(
+        ATV, "playing", {"app_name": "Rivulet", "media_title": "Dune", "media_artist": "2026"}
+    )
+    await hass.async_block_till_done()
+    assert engine.key == "Dune"
+
+    # An app without a matching source.
+    hass.states.async_set(ATV, "playing", {"app_name": "Netflix", "media_title": "X"})
+    await hass.async_block_till_done()
+    assert engine.key is None
+
+
+async def test_source_profile_as_fallback(hass: HomeAssistant) -> None:
+    hass.states.async_set(ATV, "idle")
+    entry = await _setup(hass, sources=ATV_SOURCES, key_with_label=False)
+    engine = entry.runtime_data
+    engine.store.set("Standard", {SUB_LEVEL: 0})
+    engine.store.set("Disney+", {SUB_LEVEL: -6})
+    number = async_mock_service(hass, "number", "set_value")
+
+    hass.states.async_set(ATV, "playing", {"app_name": "Disney+", "media_title": "Andor"})
+    await hass.async_block_till_done()
+    assert engine.key == "Andor"
+    assert number[-1].data["value"] == -6
+    attrs = hass.states.get(KEY_SENSOR).attributes
+    assert attrs["has_profile"] is False

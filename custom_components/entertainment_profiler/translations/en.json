@@ -48,6 +48,7 @@
         "data": {
           "label": "Name (e.g. Plex, Netflix, SmartTube)",
           "player": "Media player",
+          "apps": "Only for these apps",
           "receiver_source": "Active only if the receiver input is",
           "title_mode": "Title for series / movies",
           "title_attribute": "Own attribute (only for \"Own attribute\")",
@@ -58,7 +59,9 @@
           "receiver_source": "Optional. Leave empty to use only the player state.",
           "title_mode": "With a title every series or movie gets its own profile, otherwise one profile per source.",
           "require_playing": "Switch off if the receiver input alone decides (the player may be idle).",
-          "learn": "Store your manual changes as the profile of this source."
+          "learn": "Store your manual changes as the profile of this source.",
+          "apps": "Optional. Compared with the player's `app_name` attribute, e.g. when an Apple TV plays several apps. Empty = any app.",
+          "title_attribute": "If the value is empty or just a year (common for movies), the media title is used."
         }
       },
       "edit_source": {
@@ -72,11 +75,16 @@
         "data": {
           "label": "Name (e.g. Plex, Netflix, SmartTube)",
           "player": "Media player",
+          "apps": "Only for these apps",
           "receiver_source": "Active only if the receiver input is",
           "title_mode": "Title for series / movies",
           "title_attribute": "Own attribute (only for \"Own attribute\")",
           "require_playing": "Active only while the player is playing",
           "learn": "Learn profiles"
+        },
+        "data_description": {
+          "apps": "Optional. Compared with the player's `app_name` attribute, e.g. when an Apple TV plays several apps. Empty = any app.",
+          "title_attribute": "If the value is empty or just a year (common for movies), the media title is used."
         }
       },
       "remove_source": {
@@ -104,11 +112,13 @@
           "idle_label": "Name of the idle profile (empty = off)",
           "notify_entity": "Notification target (optional)",
           "notify_apply": "Notify when a profile is applied",
-          "notify_learn": "Notify when a profile is learned"
+          "notify_learn": "Notify when a profile is learned",
+          "key_with_label": "Include the app name in the key (App|Title)"
         },
         "data_description": {
           "key_stable": "Prevents automatic changes right after a title started from being learned.",
-          "idle_label": "Used when the receiver is on but no source matches. It is never learned."
+          "idle_label": "Used when the receiver is on but no source matches. It is never learned.",
+          "key_with_label": "Off: the key is only the title, so a series shares one profile across all apps. Without a title the app name stays the key."
         }
       }
     },
@@ -171,7 +181,7 @@
         },
         "key": {
           "name": "Key",
-          "description": "App or `App|Title`. Default: what is playing now."
+          "description": "App, title or `App|Title`."
         },
         "values": {
           "name": "Values",
@@ -189,7 +199,7 @@
         },
         "key": {
           "name": "Key",
-          "description": "App or `App|Title`."
+          "description": "App, title or `App|Title`."
         }
       }
     },

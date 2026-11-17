@@ -36,7 +36,12 @@ Entitäten er sich merken soll.
 - **Sicherheitsgrenzen** für die Lautstärke (z. B. nie unter 30 % oder über 70 %).
 - **Feste Profile:** Lernen für eine Quelle ausschalten (z. B. eine Kinder-App) und das Profil von
   Hand pflegen.
-- **Standard- und Leerlauf-Profil:** Ein Profil namens `Standard` gilt für alles ohne eigenes Profil;
+- **Eine Serie, ein Profil:** Optional ohne App-Namen im Schlüssel, dann teilen sich *Die Simpsons*
+  auf Plex und Disney+ dasselbe Profil.
+- **Mehrere Apps auf einem Player:** Ein App-Filter (`app_name`) trennt z. B. Netflix, Disney+ und
+  Plex auf demselben Apple TV.
+- **Ersatz-, Standard- und Leerlauf-Profil:** Ohne eigenes Profil gilt das Profil der Quelle (z. B.
+  `Disney+`), sonst ein Profil namens `Standard`;
   ein optionales *Leerlauf*-Profil gilt, wenn der Receiver an ist, aber nichts läuft.
 - **Profile in der Oberfläche bearbeiten:** Alle Profile sind eine To-do-Liste (Titel = Schlüssel,
   Beschreibung = Werte).
@@ -76,8 +81,9 @@ App oder ein Eingang aktiv ist und woher der Titel kommt.
 |---|---|
 | **Name** | Der Profilname der App, z. B. `Plex`, `Netflix`, `SmartTube`. Darf kein `\|` enthalten. |
 | **Media Player** | Der Player, der den Titel liefert (z. B. dein Apple TV / Plex / Android TV Player). |
+| **Nur bei diesen Apps** | Optional. Vergleicht das Attribut `app_name` des Players. Nötig, wenn ein Player mehrere Apps abspielt (Apple TV, Android TV). |
 | **Nur aktiv, wenn der Receiver-Eingang** | Optional. Zum Beispiel `TV Audio` für den Google-TV-Eingang. Leer lassen, um nur den Zustand des Players zu nutzen. |
-| **Titel für Serien / Filme** | *Automatisch* (Serienname, sonst Titel), *Serienname*, *Medientitel*, *Eigenes Attribut* oder *keiner* (ein Profil pro Quelle). |
+| **Titel für Serien / Filme** | *Automatisch* (Serienname, sonst Titel), *Serienname*, *Medientitel*, *Eigenes Attribut* oder *keiner* (ein Profil pro Quelle). Beim eigenen Attribut wird der Medientitel genommen, wenn der Wert leer oder nur eine Jahreszahl ist (bei Filmen üblich). |
 | **Nur aktiv, solange der Player spielt** | Aus, wenn allein der Receiver-Eingang entscheidet (der Player darf im Leerlauf sein). |
 | **Profile lernen** | Aus bei Quellen mit festem Profil. |
 
@@ -97,6 +103,7 @@ Vorgaben sind ein guter Start:
 | Nur lernen, wenn derselbe Titel schon lief seit | 40 s | Hält die Änderungen des Receivers beim Titelstart aus deinen Profilen heraus. |
 | Warten, bis der Receiver die Lautstärke erreicht | 20 s | Danach wird der Befehl wiederholt. |
 | Name des Leerlauf-Profils | *(aus)* | Zum Beispiel `Leerlauf`. |
+| App-Namen in den Schlüssel aufnehmen | an | Aus: Schlüssel ist nur der Titel (`Die Simpsons` statt `Disney+\|Die Simpsons`). Ohne Titel bleibt der App-Name. |
 
 ## Beispiel: Receiver + Subwoofer + drei Quellen
 
