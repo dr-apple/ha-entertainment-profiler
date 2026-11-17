@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="1200" height="300" role="img" aria-label="Entertainment Profiler">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f2a78"/><stop offset="1" stop-color="#6b3fc7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" rx="28" fill="url(#bg)"/>
+  <g transform="translate(70,60)">
+    <g fill="#fff">
+      <rect x="26" y="0" width="10" height="180" rx="5" opacity=".45"/><rect x="26" y="90" width="10" height="90" rx="5"/><circle cx="31" cy="90" r="17"/>
+      <rect x="96" y="0" width="10" height="180" rx="5" opacity=".45"/><rect x="96" y="40" width="10" height="140" rx="5"/><circle cx="101" cy="40" r="17"/>
+      <rect x="166" y="0" width="10" height="180" rx="5" opacity=".45"/><rect x="166" y="70" width="10" height="110" rx="5"/><circle cx="171" cy="70" r="17"/>
+    </g>
+    <circle cx="205" cy="165" r="42" fill="#ffb02e"/><polygon points="192,143 192,187 226,165" fill="#fff"/>
+  </g>
+  <text x="340" y="140" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif" font-size="68" font-weight="700" fill="#fff">Entertainment Profiler</text>
+  <text x="342" y="195" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif" font-size="28" fill="#e4dcff">Volume, sound and more — remembered per app, series and movie.</text>
+</svg>

@@ -1,0 +1,26 @@
+{
+  "entity": {
+    "sensor": {
+      "active_key": { "default": "mdi:movie-open-cog" },
+      "profile_count": { "default": "mdi:playlist-star" }
+    },
+    "switch": {
+      "auto_apply": { "default": "mdi:auto-fix" },
+      "learning": { "default": "mdi:school" }
+    },
+    "button": {
+      "apply_now": { "default": "mdi:play-circle-outline" },
+      "save_current": { "default": "mdi:content-save-cog-outline" }
+    },
+    "todo": {
+      "profiles": { "default": "mdi:playlist-star" }
+    }
+  },
+  "services": {
+    "save_profile": { "service": "mdi:content-save-cog-outline" },
+    "apply_profile": { "service": "mdi:play-circle-outline" },
+    "delete_profile": { "service": "mdi:delete-outline" },
+    "list_profiles": { "service": "mdi:format-list-bulleted" },
+    "import_profiles": { "service": "mdi:database-import-outline" }
+  }
+}

@@ -1,0 +1,239 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Entertainment Profiler",
+        "description": "Pick the receiver (optional, used to detect the active input) and every entity a profile should remember and restore, for example the receiver's volume and sound mode, a subwoofer level and switch, or lights.",
+        "data": {
+          "name": "Name",
+          "receiver": "Receiver / amplifier (optional)",
+          "controls": "Entities a profile controls"
+        },
+        "data_description": {
+          "receiver": "A media player whose `source` attribute tells which input is active. Leave empty if you do not need it.",
+          "controls": "Media players (volume and sound mode), numbers, switches, selects and lights."
+        }
+      }
+    },
+    "error": {
+      "no_controls": "Pick at least one entity."
+    },
+    "abort": {
+      "already_configured": "A profiler with this name already exists."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entertainment Profiler",
+        "menu_options": {
+          "sources_menu": "Sources (apps, inputs, players)",
+          "settings": "Settings",
+          "controls": "Controlled entities"
+        }
+      },
+      "sources_menu": {
+        "title": "Sources",
+        "description": "The first source that matches wins, so add the most specific ones first.",
+        "menu_options": {
+          "add_source": "Add source",
+          "edit_source": "Edit source",
+          "remove_source": "Remove source",
+          "init": "Back"
+        }
+      },
+      "add_source": {
+        "title": "Add source",
+        "description": "A source says when an app or input is active and where the title comes from.",
+        "data": {
+          "label": "Name (e.g. Plex, Netflix, SmartTube)",
+          "player": "Media player",
+          "receiver_source": "Active only if the receiver input is",
+          "title_mode": "Title for series / movies",
+          "title_attribute": "Own attribute (only for \"Own attribute\")",
+          "require_playing": "Active only while the player is playing",
+          "learn": "Learn profiles"
+        },
+        "data_description": {
+          "receiver_source": "Optional. Leave empty to use only the player state.",
+          "title_mode": "With a title every series or movie gets its own profile, otherwise one profile per source.",
+          "require_playing": "Switch off if the receiver input alone decides (the player may be idle).",
+          "learn": "Store your manual changes as the profile of this source."
+        }
+      },
+      "edit_source": {
+        "title": "Edit source",
+        "data": {
+          "id": "Source"
+        }
+      },
+      "edit_source_form": {
+        "title": "Edit source",
+        "data": {
+          "label": "Name (e.g. Plex, Netflix, SmartTube)",
+          "player": "Media player",
+          "receiver_source": "Active only if the receiver input is",
+          "title_mode": "Title for series / movies",
+          "title_attribute": "Own attribute (only for \"Own attribute\")",
+          "require_playing": "Active only while the player is playing",
+          "learn": "Learn profiles"
+        }
+      },
+      "remove_source": {
+        "title": "Remove source",
+        "data": {
+          "id": "Source"
+        }
+      },
+      "controls": {
+        "title": "Controlled entities",
+        "data": {
+          "controls": "Entities a profile controls"
+        }
+      },
+      "settings": {
+        "title": "Settings",
+        "data": {
+          "volume_min": "Lowest allowed volume",
+          "volume_max": "Highest allowed volume",
+          "key_debounce": "Wait before a change is accepted",
+          "apply_delay": "Delay before applying a profile",
+          "learn_stable": "Learn after values were unchanged for",
+          "key_stable": "Learn only after the same title played for",
+          "settle_timeout": "Wait for the receiver to reach the volume",
+          "idle_label": "Name of the idle profile (empty = off)",
+          "notify_entity": "Notification target (optional)",
+          "notify_apply": "Notify when a profile is applied",
+          "notify_learn": "Notify when a profile is learned"
+        },
+        "data_description": {
+          "key_stable": "Prevents automatic changes right after a title started from being learned.",
+          "idle_label": "Used when the receiver is on but no source matches. It is never learned."
+        }
+      }
+    },
+    "error": {
+      "no_controls": "Pick at least one entity.",
+      "label_required": "A name is required.",
+      "label_pipe": "The name must not contain the | character."
+    }
+  },
+  "selector": {
+    "title_mode": {
+      "options": {
+        "none": "No title (one profile per source)",
+        "auto": "Automatic (series, otherwise title)",
+        "series": "Series name",
+        "title": "Media title",
+        "custom": "Own attribute"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "active_key": {
+        "name": "Active profile"
+      },
+      "profile_count": {
+        "name": "Stored profiles"
+      }
+    },
+    "switch": {
+      "auto_apply": {
+        "name": "Apply automatically"
+      },
+      "learning": {
+        "name": "Learn automatically"
+      }
+    },
+    "button": {
+      "apply_now": {
+        "name": "Apply profile now"
+      },
+      "save_current": {
+        "name": "Save current values"
+      }
+    },
+    "todo": {
+      "profiles": {
+        "name": "Profiles"
+      }
+    }
+  },
+  "services": {
+    "save_profile": {
+      "name": "Save profile",
+      "description": "Stores a profile. Without values the current values of all controlled entities are saved.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Only needed with several profilers."
+        },
+        "key": {
+          "name": "Key",
+          "description": "App or `App|Title`. Default: what is playing now."
+        },
+        "values": {
+          "name": "Values",
+          "description": "Mapping entity_id to value. Default: current values."
+        }
+      }
+    },
+    "apply_profile": {
+      "name": "Apply profile",
+      "description": "Applies the profile of a key (default: what is playing now).",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Only needed with several profilers."
+        },
+        "key": {
+          "name": "Key",
+          "description": "App or `App|Title`."
+        }
+      }
+    },
+    "delete_profile": {
+      "name": "Delete profile",
+      "description": "Deletes a stored profile.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Only needed with several profilers."
+        },
+        "key": {
+          "name": "Key",
+          "description": "The profile to delete."
+        }
+      }
+    },
+    "list_profiles": {
+      "name": "List profiles",
+      "description": "Returns all stored profiles.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Only needed with several profilers."
+        }
+      }
+    },
+    "import_profiles": {
+      "name": "Import profiles",
+      "description": "Stores many profiles at once, for example when migrating from another setup.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Only needed with several profilers."
+        },
+        "profiles": {
+          "name": "Profiles",
+          "description": "Mapping key to profile."
+        },
+        "replace": {
+          "name": "Replace all",
+          "description": "Delete all existing profiles first."
+        }
+      }
+    }
+  }
+}

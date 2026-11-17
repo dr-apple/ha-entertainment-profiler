@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 420" width="1100" height="420" font-family="-apple-system,Segoe UI,Helvetica,Arial,sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#6b3fc7"/></marker>
+    <style>
+      .box{fill:#f4f1ff;stroke:#6b3fc7;stroke-width:2;rx:14}
+      .hi{fill:#6b3fc7;stroke:none;rx:14}
+      .t{font-size:20px;fill:#1f2a78;font-weight:600}
+      .s{font-size:15px;fill:#4a4a68}
+      .w{font-size:20px;fill:#fff;font-weight:600}
+      .ws{font-size:15px;fill:#e4dcff}
+      .l{stroke:#6b3fc7;stroke-width:2.5;fill:none;marker-end:url(#a)}
+      .lab{font-size:14px;fill:#6b3fc7;font-weight:600}
+    </style>
+  </defs>
+  <rect width="1100" height="420" fill="#ffffff"/>
+  <rect class="box" x="30" y="30" width="250" height="100"/><text class="t" x="50" y="68">Receiver</text><text class="s" x="50" y="95">input (source attribute)</text>
+  <rect class="box" x="30" y="160" width="250" height="100"/><text class="t" x="50" y="198">Players</text><text class="s" x="50" y="225">state + series / movie title</text>
+  <rect class="hi" x="400" y="95" width="300" height="130"/><text class="w" x="425" y="140">Sources → key</text><text class="ws" x="425" y="168">first match wins:</text><text class="ws" x="425" y="192">“Plex|The Expanse”, “Netflix”, …</text>
+  <rect class="box" x="400" y="290" width="300" height="100"/><text class="t" x="425" y="328">Profile store</text><text class="s" x="425" y="355">key → values of your entities</text>
+  <rect class="box" x="810" y="95" width="260" height="130"/><text class="t" x="830" y="133">Your entities</text><text class="s" x="830" y="160">volume, sound mode,</text><text class="s" x="830" y="182">subwoofer, lights …</text>
+  <path class="l" d="M280 80 L400 140"/><path class="l" d="M280 210 L400 180"/>
+  <path class="l" d="M700 150 L810 150"/><text class="lab" x="715" y="140">apply</text>
+  <path class="l" d="M550 225 L550 290"/><text class="lab" x="562" y="262">look up</text>
+  <path class="l" d="M940 225 C940 300 860 340 700 340"/><text class="lab" x="800" y="330">learn: you change it, it remembers</text>
+</svg>

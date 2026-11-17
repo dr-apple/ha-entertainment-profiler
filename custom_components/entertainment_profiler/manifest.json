@@ -1,0 +1,13 @@
+{
+  "domain": "entertainment_profiler",
+  "name": "Entertainment Profiler",
+  "codeowners": ["@dr-apple"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/dr-apple/ha-entertainment-profiler",
+  "integration_type": "service",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/dr-apple/ha-entertainment-profiler/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

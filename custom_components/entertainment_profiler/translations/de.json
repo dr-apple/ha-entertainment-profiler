@@ -1,0 +1,239 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Entertainment Profiler",
+        "description": "Wähle den Receiver (optional, erkennt den aktiven Eingang) und alle Entitäten, die ein Profil merken und wiederherstellen soll, z. B. Lautstärke und Klangmodus des Receivers, Subwoofer-Pegel und -Schalter oder Lichter.",
+        "data": {
+          "name": "Name",
+          "receiver": "Receiver / Verstärker (optional)",
+          "controls": "Entitäten, die ein Profil steuert"
+        },
+        "data_description": {
+          "receiver": "Ein Media Player, dessen Attribut `source` den aktiven Eingang nennt. Leer lassen, wenn du ihn nicht brauchst.",
+          "controls": "Media Player (Lautstärke und Klangmodus), Zahlen, Schalter, Auswahlfelder und Lichter."
+        }
+      }
+    },
+    "error": {
+      "no_controls": "Wähle mindestens eine Entität."
+    },
+    "abort": {
+      "already_configured": "Ein Profiler mit diesem Namen existiert bereits."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Entertainment Profiler",
+        "menu_options": {
+          "sources_menu": "Quellen (Apps, Eingänge, Player)",
+          "settings": "Einstellungen",
+          "controls": "Gesteuerte Entitäten"
+        }
+      },
+      "sources_menu": {
+        "title": "Quellen",
+        "description": "Die erste passende Quelle gilt, lege deshalb die genauesten zuerst an.",
+        "menu_options": {
+          "add_source": "Quelle hinzufügen",
+          "edit_source": "Quelle bearbeiten",
+          "remove_source": "Quelle entfernen",
+          "init": "Zurück"
+        }
+      },
+      "add_source": {
+        "title": "Quelle hinzufügen",
+        "description": "Eine Quelle sagt, wann eine App oder ein Eingang aktiv ist und woher der Titel kommt.",
+        "data": {
+          "label": "Name (z. B. Plex, Netflix, SmartTube)",
+          "player": "Media Player",
+          "receiver_source": "Nur aktiv, wenn der Receiver-Eingang",
+          "title_mode": "Titel für Serien / Filme",
+          "title_attribute": "Eigenes Attribut (nur bei \"Eigenes Attribut\")",
+          "require_playing": "Nur aktiv, solange der Player spielt",
+          "learn": "Profile lernen"
+        },
+        "data_description": {
+          "receiver_source": "Optional. Leer lassen, um nur den Zustand des Players zu nutzen.",
+          "title_mode": "Mit Titel bekommt jede Serie oder jeder Film ein eigenes Profil, sonst gibt es ein Profil pro Quelle.",
+          "require_playing": "Ausschalten, wenn allein der Receiver-Eingang entscheidet (der Player darf im Leerlauf sein).",
+          "learn": "Speichert deine manuellen Änderungen als Profil dieser Quelle."
+        }
+      },
+      "edit_source": {
+        "title": "Quelle bearbeiten",
+        "data": {
+          "id": "Quelle"
+        }
+      },
+      "edit_source_form": {
+        "title": "Quelle bearbeiten",
+        "data": {
+          "label": "Name (z. B. Plex, Netflix, SmartTube)",
+          "player": "Media Player",
+          "receiver_source": "Nur aktiv, wenn der Receiver-Eingang",
+          "title_mode": "Titel für Serien / Filme",
+          "title_attribute": "Eigenes Attribut (nur bei \"Eigenes Attribut\")",
+          "require_playing": "Nur aktiv, solange der Player spielt",
+          "learn": "Profile lernen"
+        }
+      },
+      "remove_source": {
+        "title": "Quelle entfernen",
+        "data": {
+          "id": "Quelle"
+        }
+      },
+      "controls": {
+        "title": "Gesteuerte Entitäten",
+        "data": {
+          "controls": "Entitäten, die ein Profil steuert"
+        }
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "data": {
+          "volume_min": "Niedrigste erlaubte Lautstärke",
+          "volume_max": "Höchste erlaubte Lautstärke",
+          "key_debounce": "Wartezeit, bevor ein Wechsel gilt",
+          "apply_delay": "Verzögerung vor dem Anwenden",
+          "learn_stable": "Lernen, wenn die Werte unverändert waren für",
+          "key_stable": "Nur lernen, wenn derselbe Titel schon lief seit",
+          "settle_timeout": "Warten, bis der Receiver die Lautstärke erreicht",
+          "idle_label": "Name des Leerlauf-Profils (leer = aus)",
+          "notify_entity": "Benachrichtigungsziel (optional)",
+          "notify_apply": "Melden, wenn ein Profil angewendet wird",
+          "notify_learn": "Melden, wenn ein Profil gelernt wird"
+        },
+        "data_description": {
+          "key_stable": "Verhindert, dass automatische Änderungen kurz nach dem Start eines Titels mitgelernt werden.",
+          "idle_label": "Gilt, wenn der Receiver an ist, aber keine Quelle passt. Wird nie gelernt."
+        }
+      }
+    },
+    "error": {
+      "no_controls": "Wähle mindestens eine Entität.",
+      "label_required": "Ein Name ist nötig.",
+      "label_pipe": "Der Name darf das Zeichen | nicht enthalten."
+    }
+  },
+  "selector": {
+    "title_mode": {
+      "options": {
+        "none": "Kein Titel (ein Profil pro Quelle)",
+        "auto": "Automatisch (Serie, sonst Titel)",
+        "series": "Serienname",
+        "title": "Medientitel",
+        "custom": "Eigenes Attribut"
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "active_key": {
+        "name": "Aktives Profil"
+      },
+      "profile_count": {
+        "name": "Gespeicherte Profile"
+      }
+    },
+    "switch": {
+      "auto_apply": {
+        "name": "Automatisch anwenden"
+      },
+      "learning": {
+        "name": "Automatisch lernen"
+      }
+    },
+    "button": {
+      "apply_now": {
+        "name": "Profil jetzt anwenden"
+      },
+      "save_current": {
+        "name": "Aktuelle Werte speichern"
+      }
+    },
+    "todo": {
+      "profiles": {
+        "name": "Profile"
+      }
+    }
+  },
+  "services": {
+    "save_profile": {
+      "name": "Profil speichern",
+      "description": "Speichert ein Profil. Ohne Werte werden die aktuellen Werte aller gesteuerten Entitäten gespeichert.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Nur bei mehreren Profilern nötig."
+        },
+        "key": {
+          "name": "Schlüssel",
+          "description": "App oder `App|Titel`. Standard: was gerade läuft."
+        },
+        "values": {
+          "name": "Werte",
+          "description": "Zuordnung Entität zu Wert. Standard: aktuelle Werte."
+        }
+      }
+    },
+    "apply_profile": {
+      "name": "Profil anwenden",
+      "description": "Wendet das Profil eines Schlüssels an (Standard: was gerade läuft).",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Nur bei mehreren Profilern nötig."
+        },
+        "key": {
+          "name": "Schlüssel",
+          "description": "App oder `App|Titel`."
+        }
+      }
+    },
+    "delete_profile": {
+      "name": "Profil löschen",
+      "description": "Löscht ein gespeichertes Profil.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Nur bei mehreren Profilern nötig."
+        },
+        "key": {
+          "name": "Schlüssel",
+          "description": "Das zu löschende Profil."
+        }
+      }
+    },
+    "list_profiles": {
+      "name": "Profile auflisten",
+      "description": "Liefert alle gespeicherten Profile.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Nur bei mehreren Profilern nötig."
+        }
+      }
+    },
+    "import_profiles": {
+      "name": "Profile importieren",
+      "description": "Speichert viele Profile auf einmal, z. B. bei einer Migration.",
+      "fields": {
+        "entry_id": {
+          "name": "Profiler",
+          "description": "Nur bei mehreren Profilern nötig."
+        },
+        "profiles": {
+          "name": "Profile",
+          "description": "Zuordnung Schlüssel zu Profil."
+        },
+        "replace": {
+          "name": "Alle ersetzen",
+          "description": "Löscht zuerst alle vorhandenen Profile."
+        }
+      }
+    }
+  }
+}

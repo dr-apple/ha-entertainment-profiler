@@ -1,0 +1,60 @@
+save_profile:
+  fields:
+    entry_id:
+      selector:
+        config_entry:
+          integration: entertainment_profiler
+    key:
+      example: "Plex|The Expanse"
+      selector:
+        text:
+    values:
+      example: '{"media_player.receiver": {"volume": 55, "sound_mode": "Movie"}}'
+      selector:
+        object:
+
+apply_profile:
+  fields:
+    entry_id:
+      selector:
+        config_entry:
+          integration: entertainment_profiler
+    key:
+      example: "Netflix"
+      selector:
+        text:
+
+delete_profile:
+  fields:
+    entry_id:
+      selector:
+        config_entry:
+          integration: entertainment_profiler
+    key:
+      required: true
+      example: "Netflix"
+      selector:
+        text:
+
+list_profiles:
+  fields:
+    entry_id:
+      selector:
+        config_entry:
+          integration: entertainment_profiler
+
+import_profiles:
+  fields:
+    entry_id:
+      selector:
+        config_entry:
+          integration: entertainment_profiler
+    profiles:
+      required: true
+      example: '{"Netflix": {"media_player.receiver": {"volume": 50}}}'
+      selector:
+        object:
+    replace:
+      default: false
+      selector:
+        boolean:
